@@ -72,7 +72,7 @@ const BitHelper = {
 		return (short1 << 8) | (short0 & 0xff);
 	},
 	makeInt : function(int0, int1, int2, int3){
-		return ((int3 << 24) | ((int2 & 0xff) << 16) | ((int1 & 0xff) <<  8) | ((int0 & 0xff)));
+		return ((int3 << 24) | ((int2 & 0xff) << 16) | ((int1 & 0xff) <<  8) | (int0 & 0xff));
 	},
 	getRequiredBits : function(number){
 		if(number < 0){
