@@ -9,7 +9,12 @@ BitHelper.ByteArrayBitOutput = function(array, startIndex, terminate){
 
 extendProtoType(BitHelper.BitOutput, BitHelper.ByteArrayBitOutput);
 
+BitHelper.ByteArrayBitOutput.prototype.terminate = function(){};
+
 BitHelper.ByteArrayBitOutput.prototype.writeBoolean = function(boolean){
+	if (this.index >= this.array.length){
+		this.increaseCapacity();
+	}
 	if(this.boolIndex === 7){
 		this.boolIndex = 0;
 		const old = BitHelper.byteToBooleans(this.array[this.index]);
@@ -24,18 +29,19 @@ BitHelper.ByteArrayBitOutput.prototype.writeBoolean = function(boolean){
 };
 
 BitHelper.ByteArrayBitOutput.prototype.internalAddByte = function(byte){
-	if(this.index < this.array.length){
-		this.array[this.index++] = byte;
-	}
-	else {
-		const newArray = new Int8Array(this.index + 9);//add some extra space to improve performance
-		javaArrayCopy(this.array, 0, newArray, 0, this.array.length);
-		this.array = newArray;
-		this.array[this.index++] = byte;
-	}
+	this.array[this.index++] = byte;
+};
+
+BitHelper.ByteArrayBitOutput.prototype.increaseCapacity = function(){
+	const newArray = new Int8Array(this.index + 500);//add some extra space to improve performance
+	javaArrayCopy(this.array, 0, newArray, 0, this.array.length);
+	this.array = newArray;
 };
 
 BitHelper.ByteArrayBitOutput.prototype.writeByte = function(byte){
+	if (this.index >= this.array.length){
+		this.increaseCapacity();
+	}
 	if(this.boolIndex === 0){
 		this.internalAddByte(byte);
 		return;

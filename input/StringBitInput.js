@@ -46,7 +46,7 @@ BitHelper.StringBitInput.prototype.readByte = function(){
 	}
 	const bools = new Array(8);
 	let boolsIndex = 0;
-	for(let index = this.boolIndex; index < 8; index++){
+	for(let index = this.boolIndex % 8; index < 8; index++){
 		bools[boolsIndex++] = bools1[index];
 	}
 	let index = 0;

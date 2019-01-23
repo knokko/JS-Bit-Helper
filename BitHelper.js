@@ -139,6 +139,31 @@ const BitHelper = {
 			number--;
 		}
 		return number;
+	},
+	stringFromUint16Array : function(array){
+		const length = array.length;
+   	 	let result = '';
+    	let addition = Math.pow(2,16)-1;
+
+    	for (let i = 0; i < length; i += addition){
+
+        	if (i + addition > length) {
+            	addition = length - i;
+        	}
+        	result += String.fromCharCode.apply(null, array.subarray(i,i+addition));
+    	}
+
+    	return result;
+	},
+	uint16ArrayFromString : function(string){
+		const length = string.length;
+		const result = new Uint16Array(length);
+
+		for (let i = 0; i < length; i++){
+			result[i] = string.charCodeAt(i);
+		}
+
+		return result;
 	}
 };
 
