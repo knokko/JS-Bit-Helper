@@ -47,3 +47,7 @@ BitHelper.CharArrayBitOutput.prototype.writeByte = function(byte){
 		this.writeBoolean(bools[index]);//a custom writeByte method will barely improve performance anyway
 	}
 };
+
+BitHelper.CharArrayBitOutput.prototype.toString = function(){
+	return BitHelper.stringFromUint16Array(this.array.subarray(0, this.index));
+};
