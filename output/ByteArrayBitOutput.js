@@ -58,6 +58,9 @@ BitHelper.ByteArrayBitOutput.prototype.writeByte = function(byte){
 	for(; boolsIndex < 8; boolsIndex++){
 		next[nextIndex++] = bools[boolsIndex];
 	}
+	if (this.index >= this.array.length){
+		this.increaseCapacity();
+	}
 	this.internalAddByte(BitHelper.booleansToByte(next));
 	this.index--;//the index has been increased twice
 };
