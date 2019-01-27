@@ -9,7 +9,20 @@ BitHelper.ByteArrayBitOutput = function(array, startIndex, terminate){
 
 extendProtoType(BitHelper.BitOutput, BitHelper.ByteArrayBitOutput);
 
-BitHelper.ByteArrayBitOutput.prototype.terminate = function(){};
+BitHelper.ByteArrayBitOutput.prototype.terminate = function(){
+	if (this.boolIndex !== 0){
+		this.index++;
+		this.boolIndex = 0;
+	}
+};
+
+BitHelper.ByteArrayBitOutput.prototype.getBytes = function(){
+	return this.array.subarray(0, this.index);
+};
+
+BitHelper.ByteArrayBitOutput.prototype.getRawBytes = function(){
+	return this.array;
+};
 
 BitHelper.ByteArrayBitOutput.prototype.writeBoolean = function(boolean){
 	if (this.index >= this.array.length){
