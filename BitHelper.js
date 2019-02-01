@@ -14,8 +14,7 @@ const BitHelper = {
 		return signed;
 	},
 	javaByteCast : function(number){
-		const divider = roundTo0(number / 256);
-		number -= divider * 256;
+		number = roundTo0(number) % 256;
 		if(number > 127){
 			return number - 256;
 		}
@@ -25,7 +24,21 @@ const BitHelper = {
 		return number;
 	},
 	javaCharCast : function(number){
-		return number - 65536 * Math.floor(number / 65536);
+		number = roundTo0(number) % 65536;
+		if (number < 0){
+			number += 65536;
+		}
+		return number;
+	},
+	javaIntCast : function(number){
+		number = roundTo0(number) % 4294967296;
+		if (number > 2147483647){
+			number -= 4294967296;
+		}
+		if (number < -2147483648){
+			number += 4294967296;
+		}
+		return number;
 	},
 	byteToBooleans : function(signed){
 		return BitHelper.BOOLEANS[BitHelper.toUnsignedByte(signed)].slice(0, 8);
