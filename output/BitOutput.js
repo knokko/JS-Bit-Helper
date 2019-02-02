@@ -90,3 +90,66 @@ BitHelper.BitOutput.prototype.writeJavaString = function(string){
 		this.writeNumber(string.charCodeAt(index), bitCount, false);
 	}
 };
+
+BitHelper.BitOutput.prototype.writeString = function(string){
+
+	// For compatibility with other languages, null and undefined will be treated the same
+	if (string === null || string === undefined){
+		this.writeByte(0);
+		return;
+	}
+
+	// We will use this a lot
+	const length = string.length;
+
+	if (length < 254){
+
+		// Expected situation
+		this.writeByte(length + 1);
+	} else {
+
+		// This way of storing the length costs 1 byte in this case, but spares 3 bytes in the other more likely case
+		this.addByte(255);
+		this.addInt(length);
+	}
+
+	// If the string is empty, we are done already
+	if (length > 0){
+		
+		// Those values will be changed in the first iteration of the next loop
+		let max = 0;
+		let min = 65535;
+
+		// Determine minimum and maximum char code
+		for (let index = 0; index < length; index++){
+			const current = string.charCodeAt(index);
+			if (current > max){
+				max = current;
+			}
+			if (current < min){
+				min = current;
+			}
+		}
+
+		const difference = max - min;
+		let bitCount = 0;
+
+		// Difference will be 0 for strings like 'aaa'
+		if (difference !== 0) {
+			
+			// Most likely case
+			bitCount = BitHelper.getRequiredBits(difference);
+		}
+
+		this.writeChar(min);
+		this.writeNumber(bitCount, 5, false);
+
+		// If the difference is 0, the string is already defined by the length and smallest/min character
+		if (difference > 0){
+
+			for (let index = 0; index < length; index++){
+				this.writeNumber(string.charCodeAt(index) - min, bitCount, false);
+			}
+		}
+	}
+};

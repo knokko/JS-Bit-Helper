@@ -92,3 +92,46 @@ BitHelper.BitInput.prototype.readJavaString = function(){
 	}
 	return string;
 };
+
+BitHelper.BitInput.prototype.readString = function(){
+	const length1 = this.readByte() & 0xFF;
+
+	if (length1 === 0){
+
+		// This is how we save null/undefined strings
+		return null;
+	}
+
+	let length = 0;
+	if (length1 < 255){
+		length = length1 - 1;
+	} else {
+		length = this.readInt();
+	}
+
+	// If length is 0, it must be the empty string
+	if (length === 0){
+		return '';
+	}
+
+	const chars = new Uint16Array(length);
+
+	const min = this.readChar();
+	const bitCount = this.readNumber(5, false);
+
+	if (bitCount === 0){
+
+		// The string is a sequence that repears the same character, like 'aaa'
+		for (let index = 0; index < length; index++){
+			chars[index] = min;
+		}
+	} else {
+
+		// We will have to do some effort to read the string
+		for (let index = 0; index < length; index++){
+			chars[index] = min + this.readNumber(bitCount, false);
+		}
+	}
+
+	return BitHelper.stringFromUint16Array(chars);
+};
