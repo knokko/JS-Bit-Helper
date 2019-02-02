@@ -3,7 +3,7 @@ BitHelper.ByteArrayBitOutput = function(array, startIndex, terminate){
 	this.index = startIndex ? startIndex : 0;
 	this.boolIndex = 0;
 	if(terminate){
-		this.terminate = terminate;
+		this.onTerminate = terminate;
 	}
 };
 
@@ -13,6 +13,9 @@ BitHelper.ByteArrayBitOutput.prototype.terminate = function(){
 	if (this.boolIndex !== 0){
 		this.index++;
 		this.boolIndex = 0;
+	}
+	if (this.onTerminate){
+		this.onTerminate();
 	}
 };
 
